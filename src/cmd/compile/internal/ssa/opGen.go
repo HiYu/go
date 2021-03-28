@@ -1366,6 +1366,7 @@ const (
 	OpARM64FSQRTS
 	OpARM64REV
 	OpARM64REVW
+	OpARM64REV16
 	OpARM64REV16W
 	OpARM64RBIT
 	OpARM64RBITW
@@ -2921,6 +2922,7 @@ const (
 	OpAtomicOr8Variant
 	OpAtomicOr32Variant
 	OpClobber
+	OpClobberReg
 )
 
 var opcodeTable = [...]opInfo{
@@ -18212,6 +18214,19 @@ var opcodeTable = [...]opInfo{
 		},
 	},
 	{
+		name:   "REV16",
+		argLen: 1,
+		asm:    arm64.AREV16,
+		reg: regInfo{
+			inputs: []inputInfo{
+				{0, 805044223}, // R0 R1 R2 R3 R4 R5 R6 R7 R8 R9 R10 R11 R12 R13 R14 R15 R16 R17 R19 R20 R21 R22 R23 R24 R25 R26 g R30
+			},
+			outputs: []outputInfo{
+				{0, 670826495}, // R0 R1 R2 R3 R4 R5 R6 R7 R8 R9 R10 R11 R12 R13 R14 R15 R16 R17 R19 R20 R21 R22 R23 R24 R25 R26 R30
+			},
+		},
+	},
+	{
 		name:   "REV16W",
 		argLen: 1,
 		asm:    arm64.AREV16W,
@@ -21051,7 +21066,7 @@ var opcodeTable = [...]opInfo{
 			inputs: []inputInfo{
 				{0, 1048576}, // R20
 			},
-			clobbers: 537919488, // R20 R30
+			clobbers: 538116096, // R16 R17 R20 R30
 		},
 	},
 	{
@@ -21079,7 +21094,7 @@ var opcodeTable = [...]opInfo{
 				{0, 2097152}, // R21
 				{1, 1048576}, // R20
 			},
-			clobbers: 607125504, // R20 R21 R26 R30
+			clobbers: 607322112, // R16 R17 R20 R21 R26 R30
 		},
 	},
 	{
@@ -21576,7 +21591,7 @@ var opcodeTable = [...]opInfo{
 				{0, 4}, // R2
 				{1, 8}, // R3
 			},
-			clobbers: 9223372035244163072, // R30 F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12 F13 F14 F15 F16 F17 F18 F19 F20 F21 F22 F23 F24 F25 F26 F27 F28 F29 F30 F31
+			clobbers: 9223372035244359680, // R16 R17 R30 F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12 F13 F14 F15 F16 F17 F18 F19 F20 F21 F22 F23 F24 F25 F26 F27 F28 F29 F30 F31
 		},
 	},
 	{
@@ -36372,6 +36387,11 @@ var opcodeTable = [...]opInfo{
 		argLen:    0,
 		symEffect: SymNone,
 		generic:   true,
+	},
+	{
+		name:    "ClobberReg",
+		argLen:  0,
+		generic: true,
 	},
 }
 
